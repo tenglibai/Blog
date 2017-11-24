@@ -13,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        //faker本地化
+        $this->app->singleton(\Faker\Generator::class,function (){
+           return \Faker\Factory::create('zh_CN');
+        });
     }
 
     /**

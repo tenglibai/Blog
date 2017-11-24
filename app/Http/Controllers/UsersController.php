@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserRegisterRequest;
+use App\Mail\UserRegisterMailable;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
@@ -12,6 +14,7 @@ class UsersController extends Controller
     {
         return view('users.register');
     }
+
     /**
      * Display a listing of the resource.
      *
@@ -35,20 +38,41 @@ class UsersController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(UserRegisterRequest $request)
     {
+        $data = [
+            'confirm_code' => str_random(48),
+            'avatar' => '/images/image.png'
+        ];
         //保存用户数据, 重定向.
-        User::create(array_merge($request->all(),['avatar'=>'/images/image.png']));
+        $user = User::create(array_merge($request->all(), $data));
+        //发送邮箱
+        Mail::to($user)->queue(new UserRegisterMailable($user));
+
         return redirect('/');
     }
+
+    public function confirmEmail($confirm_code)
+    {
+        $user = User::where('confirm_code', $confirm_code)->first();
+        if (is_null($user)) {
+            return redirect('/');
+        }
+        $user->is_confirmed = 1;
+        $user->confirm_code = str_random(48);
+        $user->save();
+        \Session::flash('email_confirmed', '邮箱已经确认,请登录!');
+        return redirect('user/login');
+    }
+
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -59,7 +83,7 @@ class UsersController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -70,8 +94,8 @@ class UsersController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -82,7 +106,7 @@ class UsersController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
