@@ -17,11 +17,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Blog</a>
+            <a class="navbar-brand" href="/">Blog</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="#">首页</a></li>
+                <li class="active"><a href="/">首页</a></li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>
@@ -37,8 +37,13 @@
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="../navbar/">登 陆</a></li>
-                <li><a href="user/register">注 册</a></li>
+                @if (Auth::check())
+                    <li><a href="#">{{Auth::user()->name}}</a></li>
+                    <li><a href="/logout">退出登录</a></li>
+                @else
+                    <li><a href="/user/login">登 陆</a></li>
+                    <li><a href="/user/register">注 册</a></li>
+                @endif
             </ul>
         </div><!--/.nav-collapse -->
     </div>

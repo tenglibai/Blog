@@ -3,7 +3,7 @@
     <div class="container">
         <div class="jumbotron">
             <h3>欢迎来到本论坛
-                <a class="btn btn-lg btn-primary pull-right" href="../../components/#navbar" role="button">发布新的帖子 »</a>
+                <a class="btn btn-lg btn-primary pull-right" href="/discussions/create" role="button">发布新的帖子 »</a>
             </h3>
         </div>
         <div>
@@ -12,7 +12,7 @@
                     <div class="media">
                         <div class="media-left">
                             <a href="#">
-                                <img class="media-object img-circle" alt="64*64" src="{{$discussion->user->avatar}}}" style="width:50px">
+                                <img class="media-object img-circle" alt="64*64" src="{{$discussion->user->avatar}}" style="width:50px">
                             </a>
                         </div>
                         <div class="media-body">

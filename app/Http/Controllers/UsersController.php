@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
 use App\Mail\UserRegisterMailable;
 use App\User;
@@ -10,6 +11,9 @@ use Illuminate\Support\Facades\Mail;
 
 class UsersController extends Controller
 {
+
+
+
     public function register()
     {
         return view('users.register');
@@ -45,7 +49,7 @@ class UsersController extends Controller
     {
         $data = [
             'confirm_code' => str_random(48),
-            'avatar' => '/images/image.png'
+            'avatar' => '/images/image.jpg'
         ];
         //保存用户数据, 重定向.
         $user = User::create(array_merge($request->all(), $data));
@@ -68,6 +72,23 @@ class UsersController extends Controller
         return redirect('user/login');
     }
 
+    public function login()
+    {
+        return view('users.login');
+    }
+
+    public function signin(UserLoginRequest $request)
+    {
+        if (\Auth::attempt([
+            'email' => $request->get('email'),
+            'password' => $request->get('password'),
+            'is_confirmed' => 1,
+        ])) {
+            return redirect('/');
+        }
+        \Session::flash('user_login_failed','密码不正确或者邮箱没验证.');
+        return redirect('/user/login')->withInput();
+    }
 
     /**
      * Display the specified resource.
@@ -112,5 +133,11 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function logout()
+    {
+        \Auth::logout();
+        return redirect('/');
     }
 }
