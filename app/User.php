@@ -33,6 +33,11 @@ class User extends Authenticatable
         $this->hasMany('App\Discussion');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
     public function setPasswordAttribute($password)
     {
         $this->attributes['password'] = Hash::make($password);

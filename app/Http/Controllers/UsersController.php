@@ -8,10 +8,10 @@ use App\Mail\UserRegisterMailable;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Intervention\Image\Facades\Image;
 
 class UsersController extends Controller
 {
-
 
 
     public function register()
@@ -86,7 +86,7 @@ class UsersController extends Controller
         ])) {
             return redirect('/');
         }
-        \Session::flash('user_login_failed','密码不正确或者邮箱没验证.');
+        \Session::flash('user_login_failed', '密码不正确或者邮箱没验证.');
         return redirect('/user/login')->withInput();
     }
 
@@ -139,5 +139,39 @@ class UsersController extends Controller
     {
         \Auth::logout();
         return redirect('/');
+    }
+
+    public function avatar()
+    {
+        return view('users.avatar');
+    }
+
+    public function changeAvatar(Request $request)
+    {
+        $file = $request->file('avatar');
+        $input = array('image' => $file);
+        $rules = array(
+            'image' => 'image'
+        );
+        $validator = \Validator::make($input, $rules);
+        if ($validator->fails()){
+            return \Response::json([
+                'success' => false,
+                'errors' => $validator->getMessageBag()->toArray(),
+            ]);
+        }
+        $destination = 'uploads/';
+        $filename = \Auth::user()->id.'_'.time().$file->getClientOriginalName();
+        $file->move($destination, $filename);
+        //图片裁剪(200*200)后再保存到upload
+        Image::make($destination.$filename)->fit(200)->save();
+        $user = User::find(\Auth::user()->id);
+        $user->avatar = '/'.$destination.$filename;
+        $user->save();
+
+        return \Response::json([
+            'success' => 'true',
+            'avatar' => asset($destination.$filename),
+        ]);
     }
 }

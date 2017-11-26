@@ -16,7 +16,13 @@
                             </a>
                         </div>
                         <div class="media-body">
-                            <h4 class="media-heading"><a href="/discussions/{{$discussion->id}}">{{$discussion->title}}</a></h4>
+                            <h4 class="media-heading">
+                                <a href="/discussions/{{$discussion->id}}">{{$discussion->title}}</a>
+                                <span class="media-conversation-replies">
+                                    <a href="#">{{count($discussion->comments)}}</a>
+                                    回复
+                                </span>
+                            </h4>
                             {{$discussion->user->name}}
                         </div>
                     </div>
