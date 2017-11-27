@@ -165,6 +165,7 @@ class UsersController extends Controller
         $file->move($destination, $filename);
         //图片裁剪(200*200)后再保存到upload
         Image::make($destination.$filename)->fit(200)->save();
+
         $user = User::find(\Auth::user()->id);
         $user->avatar = '/'.$destination.$filename;
         $user->save();
@@ -172,6 +173,24 @@ class UsersController extends Controller
         return \Response::json([
             'success' => 'true',
             'avatar' => asset($destination.$filename),
+            'image' => $destination.$filename,
         ]);
+    }
+
+    public function cropAvatar(Request $request)
+    {
+//        dd($request->all());
+        $photo = $request->get('photo');
+        $width = $request->get('w');
+        $height = $request->get('h');
+        $xAlign = $request->get('x');
+        $yAlign = $request->get('y');
+        Image::make($photo)->crop($width, $height, $xAlign, $yAlign)->save();
+        $user = User::find(\Auth::user()->id);
+        $user->avatar = asset($photo);
+        $user->save();
+
+        return redirect('/user/avatar');
+
     }
 }

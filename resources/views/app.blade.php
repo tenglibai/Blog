@@ -7,12 +7,18 @@
     <link rel="stylesheet" href="/css/app.css">
     <link rel="stylesheet" href="/css/font-awesome.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/jquery.Jcrop.css">
 
 
-    <script src="/js/app.js"></script>
-    <script src="/js/bootstrap.min.js"></script>
+
     <script src="/js/jquery-2.1.4.min.js"></script>
+    {{--<script src="/js/bootstrap.min.js"></script>--}}
+    {{--app.js就是代表着bootstrap--}}
+    <script src="/js/app.js"></script>
     <script src="/js/jquery.form.js"></script>
+    <script src="/js/jquery.Jcrop.min.js"></script>
+
+
 
 </head>
 <body>
